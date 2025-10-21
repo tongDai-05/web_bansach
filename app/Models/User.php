@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+// Import các Models mới
+use App\Models\Cart;
+use App\Models\Order;
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -41,4 +45,24 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    // ----------------------------------------------------------------------
+    // THÊM MỐI QUAN HỆ (RELATIONSHIPS)
+    // ----------------------------------------------------------------------
+
+    /**
+     * Lấy các giỏ hàng (Cart) của người dùng này.
+     */
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
+    /**
+     * Lấy các đơn hàng (Order) của người dùng này.
+     */
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

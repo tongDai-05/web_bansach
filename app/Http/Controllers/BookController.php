@@ -17,13 +17,29 @@ class BookController extends Controller
 
 
     // Hiển thị danh sách sách
-    public function index()
+    public function index(Request $request) // <--- NHẬN VÀO OBJECT REQUEST
     {
-        $books = Book::latest()->paginate(10);
+       // Khởi tạo query ban đầu (có thể là sắp xếp mới nhất)
+        $query = \App\Models\Book::latest();
+        
+        // Lấy từ khóa tìm kiếm (Sử dụng trim() để loại bỏ khoảng trắng dư thừa)
+        $search = trim($request->input('search'));
+
+        // Logic Tìm kiếm: Chỉ áp dụng nếu $search KHÔNG rỗng và có giá trị
+        if (!empty($search)) {
+            // Sử dụng Closure để nhóm các điều kiện OR, tránh xung đột
+            $query->where(function ($q) use ($search) {
+                // Kiểm tra tiêu đề (title) hoặc tác giả (author)
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('author', 'like', "%{$search}%");
+            });
+        }
+        
+        // Phân trang và giữ lại query string (search parameter)
+        $books = $query->paginate(10)->withQueryString();
+        
         return view('books.index', compact('books'));
     }
-
-
 
     // Form thêm sách
     public function create()
@@ -39,6 +55,7 @@ class BookController extends Controller
         'title' => 'required|string|max:255',
         'author' => 'required|string|max:255',
         'price' => 'required|numeric|min:0',
+        'quantity' => 'required|integer|min:0',
         'description' => 'nullable|string',
         'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);

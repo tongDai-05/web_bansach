@@ -12,6 +12,23 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+    
+    {{-- FORM TÌM KIẾM --}}
+    <form method="GET" action="{{ route('books.index') }}" class="mb-4">
+        <div class="input-group">
+            <input 
+                type="text" 
+                name="search" 
+                class="form-control" 
+                placeholder="Tìm kiếm theo tên sách hoặc tác giả..." 
+                value="{{ request('search') }}">
+            <button class="btn btn-outline-secondary" type="submit">Tìm</button>
+            @if(request('search'))
+                <a href="{{ route('books.index') }}" class="btn btn-outline-danger">Xóa tìm kiếm</a>
+            @endif
+        </div>
+    </form>
+    {{-- END FORM TÌM KIẾM --}}
 
     <table class="table table-bordered table-hover align-middle">
         <thead class="table-dark">
@@ -26,11 +43,13 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($books as $book)
+            {{-- ĐÃ KHÔI PHỤC VÒNG LẶP HIỂN THỊ SÁCH --}}
+            @forelse ($books as $book)
                 <tr>
                     <td>{{ $book->id }}</td>
                     <td>
-                        @if($book->cover_image)
+                        {{-- Dùng cover_image đã được đồng bộ --}}
+                        @if($book->cover_image) 
                             <img src="{{ asset('storage/' . $book->cover_image) }}" width="60" height="80" style="object-fit: cover;">
                         @else
                             <span class="text-muted">Không có ảnh</span>
@@ -53,7 +72,17 @@
                         @endif
                     </td>
                 </tr>
-            @endforeach
+            @empty
+                {{-- THÔNG BÁO KHI KHÔNG CÓ KẾT QUẢ --}}
+                <tr>
+                    <td colspan="7" class="text-center text-muted p-4">
+                        Không tìm thấy cuốn sách nào.
+                        @if(request('search'))
+                            Vui lòng thử từ khóa khác.
+                        @endif
+                    </td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 

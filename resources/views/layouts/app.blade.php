@@ -1,3 +1,7 @@
+<?php
+// File: resources/views/layouts/app.blade.php
+
+?>
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -7,7 +11,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Website Bán Sách Tự Động') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -20,22 +24,33 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                <a class="navbar-brand" href="{{ route('books.index') }}">
+                    {{ config('app.name', 'Website Bán Sách Tự Động') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
+                    {{-- Left Side Of Navbar - SỬ DỤNG CHO CÁC LIÊN KẾT CHÍNH --}}
                     <ul class="navbar-nav me-auto">
-
+                        {{-- Thêm liên kết Trang chủ hoặc Sách ở đây nếu cần --}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('books.index') }}">Sách</a>
+                        </li>
                     </ul>
 
-                    <!-- Right Side Of Navbar -->
+                    {{-- Right Side Of Navbar - CHỈ CHỨA GIỎ HÀNG VÀ AUTH LINKS --}}
                     <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
+                        
+                        {{-- LIÊN KẾT GIỎ HÀNG --}}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('cart.index') }}">
+                                🛒 Giỏ hàng
+                            </a>
+                        </li>
+                        
+                        {{-- AUTHENTICATION LINKS (Login/Register/Logout Dropdown) --}}
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">

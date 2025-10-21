@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2>📚 Thêm sách mới</h2>
+    <h2> Thêm sách mới</h2>
     <form action="{{ route('books.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
@@ -16,9 +16,16 @@
         </div>
 
         <div class="mb-3">
-            <label for="price" class="form-label">Giá (VNĐ)</label>
-            <input type="number" class="form-control" id="price" name="price" required>
+            <label for="quantity" class="form-label">Số lượng</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" value="{{ old('quantity') }}" required min="0">
         </div>
+
+        <div class="mb-3">
+            <label for="price" class="form-label">Giá (VNĐ)</label>
+            <input type="number" class="form-control" id="price" name="price" required min="0">
+        </div>
+
+      
 
         <div class="mb-3">
             <label for="description" class="form-label">Mô tả</label>

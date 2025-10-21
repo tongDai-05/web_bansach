@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2>✏️ Sửa thông tin sách</h2>
+    <h2>Sửa thông tin sách</h2>
 
     <form action="{{ route('books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -22,6 +22,11 @@
             <label class="form-label">Giá</label>
             <input type="number" name="price" value="{{ $book->price }}" class="form-control" required min="0">
         </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Số lượng</label>
+            <input type="number" name="quantity" value="{{ $book->quantity }}" class="form-control" required min="0">
+        </div>
 
         <div class="mb-3">
             <label class="form-label">Mô tả</label>
@@ -30,9 +35,9 @@
 
         <div class="mb-3">
             <label class="form-label">Ảnh bìa (chọn ảnh mới nếu muốn đổi)</label>
-            <input type="file" name="image" class="form-control">
-            @if($book->image)
-                <img src="{{ asset('storage/'.$book->image) }}" alt="Ảnh bìa" class="mt-2" style="width:120px;">
+            <input type="file" name="cover_image" class="form-control"> 
+            @if($book->cover_image) 
+                <img src="{{ asset('storage/'.$book->cover_image) }}" alt="Ảnh bìa" class="mt-2" style="width:120px;">
             @endif
         </div>
 
