@@ -64,7 +64,8 @@
                 <div class="card-body">
                     {{-- Chỉ hiển thị nút Hoàn tiền nếu đơn hàng chưa bị Hủy hoặc Hoàn thành --}}
                     @if(!in_array($order->status, ['cancelled', 'completed']))
-                        <form action="{{ route('admin.orders.refund', $order->id) }}" method="POST" onsubmit="return confirm('Xác nhận hoàn tiền và hủy đơn hàng #{{ $order->id }}? Thao tác này KHÔNG thể hoàn tác và sẽ cập nhật lại tồn kho.')">
+                        {{-- SỬA: Đổi route từ admin.orders.refund sang admin.orders.processRefund --}}
+                        <form action="{{ route('admin.orders.processRefund', $order->id) }}" method="POST" onsubmit="return confirm('Xác nhận hoàn tiền và hủy đơn hàng #{{ $order->id }}? Thao tác này KHÔNG thể hoàn tác và sẽ cập nhật lại tồn kho.')">
                             @csrf
                             <button type="submit" class="btn btn-danger w-100">
                                 🔄 Hủy & Hoàn tiền

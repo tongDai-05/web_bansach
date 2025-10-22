@@ -38,7 +38,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('books.index') }}">Sách</a>
                         </li>
-                    </ul>
+                    
                         {{-- THÊM LIÊN KẾT ADMIN DASHBOARD/QUẢN LÝ ĐƠN HÀNG --}}
                         @auth
                             @if (Auth::user()->role === 'admin')
@@ -76,15 +76,23 @@
                                 </li>
                             @endif
                         @else
+                            {{-- LIÊN KẾT LỊCH SỬ ĐƠN HÀNG ĐỘC LẬP (NÊN THÊM ĐỂ TRÁNH LỖI DROPPER) --}}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('orders.history') }}">
+                                    Lịch sử Đơn hàng
+                                </a>
+                            </li>
+
                             <li class="nav-item dropdown">
+                                {{-- Thẻ A chỉ dùng để hiển thị tên và toggle dropdown --}}
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('orders.history') }}">
-                                        Lịch sử Đơn hàng
-                                    </a>
+                                    {{-- BỎ LIÊN KẾT LỊCH SỬ ĐƠN HÀNG KHỎI DROP DOWN ĐỂ TRÁNH NHẦM LẪN VÀ ĐƯA RA NGOÀI --}}
+                                    
+                                    {{-- GIỮ LẠI LOGOUT --}}
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

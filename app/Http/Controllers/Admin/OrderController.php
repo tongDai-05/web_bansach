@@ -62,9 +62,9 @@ class OrderController extends Controller
     
     /**
      * Xử lý hoàn tiền/hủy đơn hàng (Chức năng Admin).
-     * Đảm bảo phương thức này tồn tại và tên là refundOrder.
+     
      */
-    public function refundOrder(Order $order)
+    public function processRefund(Order $order)
     {
         // Kiểm tra nếu đơn hàng đã bị hủy hoặc hoàn thành thì không thể hoàn tiền
         if (in_array($order->status, ['cancelled', 'completed'])) {

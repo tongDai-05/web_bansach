@@ -43,8 +43,8 @@
                             <span class="badge {{ $statusInfo['class'] }}">{{ $statusInfo['label'] }}</span>
                         </td>
                         <td>
-                            {{-- Dẫn đến trang chi tiết đơn hàng (order.success) --}}
-                            <a href="{{ route('order.success', $order->id) }}" class="btn btn-sm btn-info">Xem</a>
+                            {{-- SỬA CHỮA: Sử dụng route 'orders.show' --}}
+                            <a href="{{ route('orders.show', $order->id) }}" class="btn btn-sm btn-info">Xem</a>
                         </td>
                     </tr>
                 @endforeach
