@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Category;
 
 class BookController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['index', 'show']);
         $this->middleware('role:admin')->except(['index', 'show']);
     }
 
@@ -44,7 +45,8 @@ class BookController extends Controller
     // Form thêm sách
     public function create()
     {
-        return view('books.create');
+        $categories = Category::all(); // ⬅️ LẤY TẤT CẢ THỂ LOẠI
+        return view('books.create', compact('categories')); // ⬅️ TRUYỀN DỮ LIỆU
     }
 
     // Lưu sách mới
@@ -54,6 +56,7 @@ class BookController extends Controller
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'author' => 'required|string|max:255',
+        'category_id' => 'nullable|exists:categories,id',
         'price' => 'required|numeric|min:0',
         'quantity' => 'required|integer|min:0',
         'description' => 'nullable|string',
@@ -81,7 +84,8 @@ class BookController extends Controller
     // Form sửa sách
     public function edit(Book $book)
     {
-        return view('books.edit', compact('book'));
+        $categories = Category::all(); // ⬅️ LẤY TẤT CẢ THỂ LOẠI
+        return view('books.edit', compact('book', 'categories')); // ⬅️ TRUYỀN DỮ LIỆU
     }
 
     // Cập nhật sách
@@ -90,6 +94,7 @@ class BookController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
+            'category_id' => 'nullable|exists:categories,id',
             'price' => 'required|numeric',
             'quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',

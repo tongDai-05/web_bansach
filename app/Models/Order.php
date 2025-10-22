@@ -17,6 +17,7 @@ class Order extends Model
         'customer_email',
         'customer_phone',
         'shipping_address',
+        'cancellation_requested',
     ];
 
     // Mối quan hệ: Một đơn hàng thuộc về một người dùng

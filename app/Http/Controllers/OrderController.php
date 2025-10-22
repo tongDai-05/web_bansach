@@ -92,6 +92,7 @@ class OrderController extends Controller
                 'user_id' => Auth::id(),
                 'total_price' => 0, // Sẽ update sau
                 'status' => 'pending',
+                'cancellation_requested' => false, // Set default value
             ]));
 
             // 3. Tạo chi tiết đơn hàng (Order Items) và Cập nhật tồn kho
@@ -125,7 +126,8 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return redirect()->route('order.success', $order->id)->with('success', 'Đặt hàng thành công! Mã đơn hàng của bạn là #' . $order->id);
+            // SỬA: CHUYỂN HƯỚNG ĐẾN TÊN ROUTE MỚI LÀ orders.show
+            return redirect()->route('orders.show', $order->id)->with('success', 'Đặt hàng thành công! Mã đơn hàng của bạn là #' . $order->id);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -134,10 +136,64 @@ class OrderController extends Controller
     }
     
     /**
-     * Trang hiển thị đơn hàng thành công.
+     * Hiển thị chi tiết đơn hàng (User/Admin).
      */
-    public function orderSuccess(Order $order)
+    public function showOrder(Order $order)
     {
+        // Kiểm tra quyền truy cập: Chỉ user sở hữu hoặc admin mới được xem
+        if (Auth::check()) {
+            // Lấy order user id
+            $orderUserId = $order->user_id;
+
+            // Kiểm tra: nếu user id của order không khớp với Auth user id và Auth user không phải admin
+            if ($orderUserId !== Auth::id() && Auth::user()->role !== 'admin') {
+                abort(403, 'Bạn không có quyền xem đơn hàng này.');
+            }
+        } else {
+             // Đảm bảo chỉ user đã đăng nhập mới được xem chi tiết đơn hàng
+             abort(403, 'Bạn phải đăng nhập để xem đơn hàng này.'); 
+        }
+        
         return view('cart.order-success', compact('order'));
+    }
+
+    /**
+     * Hiển thị lịch sử đơn hàng của người dùng đã đăng nhập.
+     */
+    public function orderHistory()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $orders = Auth::user()->orders()->latest()->paginate(10);
+
+        return view('cart.order-history', compact('orders'));
+    }
+
+    /**
+     * Cho phép người dùng yêu cầu hủy/hoàn tiền đơn hàng.
+     */
+    public function requestCancellation(Order $order)
+    {
+        // 1. Chỉ cho phép người dùng hiện tại yêu cầu hủy đơn hàng của họ
+        if ($order->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Bạn không có quyền truy cập đơn hàng này.');
+        }
+
+        // 2. Chỉ cho phép yêu cầu hủy nếu đơn hàng đang ở trạng thái pending/processing và chưa bị hủy/hoàn thành
+        if ($order->status === 'cancelled' || $order->status === 'completed') {
+            return redirect()->back()->with('error', 'Đơn hàng đã hoàn thành hoặc đã bị hủy. Không thể yêu cầu hủy.');
+        }
+        
+        // 3. Nếu đã có yêu cầu rồi thì không cho phép gửi lại
+        if ($order->cancellation_requested) {
+             return redirect()->back()->with('error', 'Bạn đã gửi yêu cầu hủy đơn hàng này trước đó.');
+        }
+
+        // 4. Cập nhật trạng thái yêu cầu hủy
+        $order->update(['cancellation_requested' => true]);
+
+        return redirect()->back()->with('success', 'Yêu cầu hủy/hoàn tiền đơn hàng #' . $order->id . ' đã được gửi tới Admin. Chúng tôi sẽ phản hồi sớm!');
     }
 }

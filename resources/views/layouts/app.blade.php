@@ -39,6 +39,18 @@
                             <a class="nav-link" href="{{ route('books.index') }}">Sách</a>
                         </li>
                     </ul>
+                        {{-- THÊM LIÊN KẾT ADMIN DASHBOARD/QUẢN LÝ ĐƠN HÀNG --}}
+                        @auth
+                            @if (Auth::user()->role === 'admin')
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger fw-bold" href="{{ route('admin.orders.index') }}">
+                                        🛠️ Quản lý Đơn hàng
+                                    </a>
+                                </li>
+                            @endif
+                        @endauth
+                        
+                    </ul>
 
                     {{-- Right Side Of Navbar - CHỈ CHỨA GIỎ HÀNG VÀ AUTH LINKS --}}
                     <ul class="navbar-nav ms-auto">
@@ -70,6 +82,9 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ route('orders.history') }}">
+                                        Lịch sử Đơn hàng
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
